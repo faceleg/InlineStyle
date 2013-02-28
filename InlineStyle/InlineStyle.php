@@ -301,8 +301,10 @@ class InlineStyle
                 //Don't parse empty props
                 if(!trim($props))continue;
                 preg_match('#^([-a-z0-9\*]+):(.*)$#i', $props, $matches);
-                list($match, $prop, $val) = $matches;
-                $styles[$prop] = $val;
+                if ($matches) {
+                    list($match, $prop, $val) = $matches;
+                    $styles[$prop] = $val;
+                }
             }
         }
 
@@ -332,7 +334,7 @@ class InlineStyle
     {
         // strip comments
         $s = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!','', $s);
-        
+
         // strip keyframes rules
         $s = preg_replace('/@[-|keyframes].*?\{.*?\}[ \r\n]*\}/s', '', $s);
 
