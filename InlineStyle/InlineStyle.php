@@ -247,6 +247,8 @@ class InlineStyle
         $stylesheet = $this->_stripStylesheet($stylesheet);
         $stylesheet = trim(trim($stylesheet), "}");
         foreach(explode("}", $stylesheet) as $rule) {
+            //Don't parse empty rules
+        	if(!trim($rule))continue;
             list($selector, $style) = explode("{", $rule, 2);
             foreach (explode(',', $selector) as $sel) {
                 $parsed[] = array(trim($sel), trim(trim($style), ";"));
@@ -296,10 +298,12 @@ class InlineStyle
         if($style) {
             foreach(explode(";", $style) as $props) {
                 $props = trim(trim($props), ";");
-                preg_match('#^([-a-z0-9]+):(.*)$#i', $props, $matches);
-                if (!$matches) {
-                    continue;
-                }
+                //Don't parse empty props
+                if(!trim($props))continue;
+                preg_match('#^([-a-z0-9\*]+):(.*)$#i', $props, $matches);
+				if (!$matches) {
+					continue;
+				}
                 list($match, $prop, $val) = $matches;
                 $styles[$prop] = $val;
             }
@@ -331,6 +335,9 @@ class InlineStyle
     {
         // strip comments
         $s = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!','', $s);
+        
+        // strip keyframes rules
+        $s = preg_replace('/@[-|keyframes].*?\{.*?\}[ \r\n]*\}/s', '', $s);
 
         return $s;
     }
