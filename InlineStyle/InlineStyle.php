@@ -297,6 +297,9 @@ class InlineStyle
             foreach(explode(";", $style) as $props) {
                 $props = trim(trim($props), ";");
                 preg_match('#^([-a-z0-9]+):(.*)$#i', $props, $matches);
+                if (!$matches) {
+                    continue;
+                }
                 list($match, $prop, $val) = $matches;
                 $styles[$prop] = $val;
             }
